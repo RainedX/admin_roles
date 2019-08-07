@@ -41,8 +41,17 @@ export default {
     },
     methods: {
         handleLogin() {
-            this.$router.push({
-                path: '/home'
+            const { username, password } = this.formLabelAlign
+            this.$store.dispatch('user/login', {
+                username,
+                password
+            }).then(() => {
+                this.$router.push({
+                    path: this.$route.query.redirect || '/'
+                })
+                .catch(() => {
+                    this.$message.error('用户名或者密码错误，请重新登录')
+                })
             })
         }
     }
