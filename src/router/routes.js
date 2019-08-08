@@ -1,4 +1,5 @@
 import Layout from '@/layout/index.vue'
+import NoFound from '@/views/NotFound.vue'
 
 export const constantRoutes = [
     {
@@ -20,7 +21,25 @@ export const constantRoutes = [
                 }
             }
         ]
+    },
+    {
+        path: '/404',
+        component: NoFound,
+        hidden: true
     }
 ]
 
-export const asyncRoutes = []
+export const asyncRoutes = [
+    {
+        path: '/about',
+        component: Layout,
+        redirect: '/about/index',
+        meta: {title: 'About', roles: ['admin']},
+        children: [
+            {
+                path: 'index',
+                component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
+            }
+        ]
+    }
+]

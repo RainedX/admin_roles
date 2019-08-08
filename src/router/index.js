@@ -4,8 +4,18 @@ import { constantRoutes } from './routes'
 
 Vue.use(Router)
 
-export default new Router({
+const createRouter = () => new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
+  scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
+
+// 重置路由
+export const resetRouter = () => {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher
+}
+
+const router = createRouter()
+
+export default router

@@ -1,30 +1,30 @@
 <template>
-    <div
-        v-loading="$store.state.isShowLoading"
-        class="login"
-        element-loading-text="拼命加载中"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgba(0, 0, 0, 0.8)"
-    >
+    <div class="login">
         <div class="login-con">
             <div class="login-header">欢迎登录</div>
-            <el-form label-position="left" label-width="50px" :model="formLabelAlign">
-                <el-form-item label="账号">
-                    <el-input v-model="formLabelAlign.username" placeholder="username">
+            <el-form
+                ref="formLogin"
+                status-icon
+                label-position="left"
+                label-width="50px"
+                :model="formLogin"
+                :rules="rules"
+            >
+                <el-form-item label="账号" prop="username">
+                    <el-input v-model="formLogin.username" placeholder="username">
                         <i slot="prepend" class="el-icon-user"></i>
                     </el-input>
                 </el-form-item>
-                <el-form-item label="密码">
+                <el-form-item label="密码" prop="password">
                     <el-input
-                        v-model="formLabelAlign.password"
-                        :show-password="true"
+                        v-model="formLogin.password"
                         placeholder="password"
                     >
                         <i slot="prepend" class="el-icon-lock"></i>
                     </el-input>
                 </el-form-item>
+                <el-button type="primary" @click="submitForm('formLogin')">登录</el-button>
             </el-form>
-            <el-button type="primary" @click="handleLogin">登录</el-button>
         </div>
     </div>
 </template>
@@ -32,26 +32,50 @@
 <script>
 export default {
     data() {
-        return {
-            formLabelAlign: {
-                username: '',
-                password: ''
+        let validatePass = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请输入用户名'));
+            } else {
+                callback()
             }
-        };
+        }
+        let validatePass2 = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请输入密码'));
+            } else {
+                callback()
+            }
+        }
+        return {
+            formLogin: {
+                username: 'admin',
+                password: '123'
+            },
+            rules: {
+                username: [ { validator: validatePass, trigger: 'blur' } ],
+                password: [ { validator: validatePass2, trigger: 'blur' } ]
+            }
+        }
     },
     methods: {
-        handleLogin() {
-            const { username, password } = this.formLabelAlign
-            this.$store.dispatch('user/login', {
-                username,
-                password
-            }).then(() => {
-                this.$router.push({
-                    path: this.$route.query.redirect || '/'
-                })
-                .catch(() => {
-                    this.$message.error('用户名或者密码错误，请重新登录')
-                })
+        submitForm(formName) {
+            const { username, password } = this.formLogin
+             this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.$store.dispatch('user/login', {
+                        username,
+                        password
+                    }).then(() => {
+                        this.$router.push({
+                            path: this.$route.query.redirect || '/'
+                        })
+                    }).catch(() => {
+                        this.$message.error('用户名或者密码错误，请重新登录')
+                    })
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
             })
         }
     }
@@ -72,7 +96,7 @@ export default {
         border-radius: 5px;
         right: 150px;
         top: 50%;
-        width: 300px;
+        width: 320px;
         transform: translateY(-50%);
         & /deep/ .el-button--primary {
             width: 100%;
