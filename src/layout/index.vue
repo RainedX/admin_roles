@@ -26,8 +26,10 @@
 export default {
     methods: {
         handleOut() {
-            this.$router.push({
-                path: '/login'
+            this.$store.dispatch('user/logout').then(() => {
+                this.$router.push({
+                    path: '/login'
+                })
             })
         }
     }

@@ -1,4 +1,4 @@
-import { login, getUserInfo } from '@/api/user'
+import { login, logout, getUserInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { SET_TOKEN, SET_ROLES } from '../mutation-types'
 import router, { resetRouter } from '@/router'
